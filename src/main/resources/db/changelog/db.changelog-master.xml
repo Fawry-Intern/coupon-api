@@ -1,0 +1,19 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="create_coupons_tbl" author="muhammad hussein" context="development">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="coupons"/>
+            </not>
+        </preConditions>
+        <sqlFile path="db/changelog/sql/coupons_v.0.0.0.sql"/>
+    </changeSet>
+
+
+
+
+</databaseChangeLog>
