@@ -58,13 +58,13 @@ public class GlobalExceptionHandler {
 
         ErrorResponseDTO error = ErrorResponseDTO.builder()
                 .timestamp(LocalDateTime.now())
-                .status(ErrorCode.RESOURCE_NOT_FOUND.getStatus().value())
-                .error(ErrorCode.RESOURCE_NOT_FOUND.getStatus().getReasonPhrase())
+                .status(ErrorCode.COUPON_NOT_FOUND.getStatus().value())
+                .error(ErrorCode.COUPON_NOT_FOUND.getStatus().getReasonPhrase())
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
                 .build();
 
-        return new ResponseEntity<>(error, ErrorCode.RESOURCE_NOT_FOUND.getStatus());
+        return new ResponseEntity<>(error, ErrorCode.COUPON_NOT_FOUND.getStatus());
     }
 
     @ExceptionHandler(EntityAlreadyExistsException.class)
@@ -76,13 +76,13 @@ public class GlobalExceptionHandler {
 
         ErrorResponseDTO error = ErrorResponseDTO.builder()
                 .timestamp(LocalDateTime.now())
-                .status(ErrorCode.RESOURCE_ALREADY_EXISTS.getStatus().value()) // Use 409 Conflict
-                .error(ErrorCode.RESOURCE_ALREADY_EXISTS.getStatus().getReasonPhrase())
+                .status(ErrorCode.COUPON_ALREADY_EXISTS.getStatus().value()) // Use 409 Conflict
+                .error(ErrorCode.COUPON_ALREADY_EXISTS.getStatus().getReasonPhrase())
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
                 .build();
 
-        return new ResponseEntity<>(error, ErrorCode.RESOURCE_ALREADY_EXISTS.getStatus());
+        return new ResponseEntity<>(error, ErrorCode.COUPON_ALREADY_EXISTS.getStatus());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
