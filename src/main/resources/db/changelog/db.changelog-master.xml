@@ -13,7 +13,20 @@
         <sqlFile path="db/changelog/sql/coupons_v.0.0.0.sql"/>
     </changeSet>
 
+    <changeSet id="Fix_discount_types_constraint" author="ahmed yahia" context="development">
+        <preConditions onFail="MARK_RAN">
+                <tableExists tableName="coupons"/>
+        </preConditions>
+        <sqlFile path="db/changelog/sql/coupons_v.0.0.1.sql"/>
+    </changeSet>
 
-
+    <changeSet id="create_consumptions_tbl" author="ahmed yahia" context="development">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="coupon_consumption"/>
+            </not>
+        </preConditions>
+        <sqlFile path="db/changelog/sql/coupons_v.1.0.0.sql"/>
+    </changeSet>
 
 </databaseChangeLog>
