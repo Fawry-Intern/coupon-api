@@ -32,6 +32,11 @@ public class CouponServiceImpl implements CouponService {
         if (Boolean.TRUE.equals(couponRepository.existsByCouponCode(couponDTO.getCouponCode()))) {
             throw new EntityAlreadyExistsException("Coupon", couponDTO.getCouponCode());
         }
+
+        if(couponDTO.getExpiryDate().isAfter(Instant.now())){
+            throw new IllegalArgumentException("Expiry date should be after current date");
+        }
+
         Coupon coupon = Coupon.builder()
                 .couponCode(couponDTO.getCouponCode())
                 .discountValue(couponDTO.getDiscountValue())
