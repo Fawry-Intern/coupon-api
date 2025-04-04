@@ -32,6 +32,16 @@ public class CouponServiceImpl implements CouponService {
         if (Boolean.TRUE.equals(couponRepository.existsByCouponCode(couponDTO.getCouponCode()))) {
             throw new EntityAlreadyExistsException("Coupon", couponDTO.getCouponCode());
         }
+
+        if(couponDTO.getExpiryDate().isBefore(Instant.now())){
+            throw new IllegalArgumentException("Expiry date should be after current date");
+        }
+
+        // check if coupon is Percentage and discount value is greater than 100
+        if (couponDTO.getDiscountType().equals(String.valueOf(DiscountType.PERCENTAGE)) && couponDTO.getDiscountValue().compareTo(BigDecimal.valueOf(100)) > 0) {
+            throw new IllegalArgumentException("Percentage discount value cannot exceed 100");
+        }
+
         Coupon coupon = Coupon.builder()
                 .couponCode(couponDTO.getCouponCode())
                 .discountValue(couponDTO.getDiscountValue())
@@ -101,6 +111,14 @@ public class CouponServiceImpl implements CouponService {
             throw new IllegalArgumentException("Coupon is not valid");
         }
 
+        // check if the coupon is already used by this user and coupon is fixed_amount
+        if (coupon.getDiscountType() == DiscountType.FIXED_AMOUNT) {
+            couponConsumptionRepository.findByCoupon_CouponCodeAndCustomerId(consumeCouponRequestDTO.getCouponCode(), getUserId())
+                    .ifPresent(consumption -> {
+                        throw new IllegalArgumentException("Coupon has already been used by this user");
+                    });
+        }
+
         DiscountDTO discountDTO;
         if (couponDiscountType(coupon).equals(DiscountType.PERCENTAGE.name())) {
             discountDTO = calculatePercentageDiscount(coupon, consumeCouponRequestDTO.getOrderAmount());
@@ -112,6 +130,13 @@ public class CouponServiceImpl implements CouponService {
         couponRepository.save(coupon);
         saveCouponConsumption(consumeCouponRequestDTO, discountDTO.getActualDiscount(),coupon);
         return discountDTO;
+    }
+
+    @Override
+    public void deleteCoupon(String couponCode) {
+        Coupon coupon = couponRepository.findByCouponCode(couponCode)
+                .orElseThrow(() -> new EntityNotFoundException("Coupon with code " + couponCode + " not found"));
+        couponRepository.delete(coupon);
     }
 
     private void saveCouponConsumption(ConsumeCouponRequestDTO consumeCouponRequestDTO, BigDecimal actualDiscount,Coupon coupon) {

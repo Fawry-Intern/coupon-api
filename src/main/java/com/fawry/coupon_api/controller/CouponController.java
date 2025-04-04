@@ -29,6 +29,12 @@ public class CouponController {
         return ResponseEntity.ok(couponService.getAllCoupons());
     }
 
+    @DeleteMapping("/{couponCode}")
+    public ResponseEntity<Void> deleteCoupon(@PathVariable String couponCode) {
+        couponService.deleteCoupon(couponCode);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/{couponCode}")
     public ResponseEntity<CouponDTO> getCouponByCode(@PathVariable String couponCode) {
         return ResponseEntity.ok(couponService.getCouponByCode(couponCode));
