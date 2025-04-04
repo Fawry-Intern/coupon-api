@@ -18,4 +18,6 @@ public interface CouponService {
     void deactivateCoupon(String couponCode);
 
     DiscountDTO consumeCoupon(ConsumeCouponRequestDTO consumeCouponRequestDTO);
+
+    void deleteCoupon(String couponCode);
 }
