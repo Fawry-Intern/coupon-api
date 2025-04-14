@@ -139,6 +139,32 @@ public class CouponServiceImpl implements CouponService {
         couponRepository.delete(coupon);
     }
 
+    @Override
+    public DiscountDTO checkCoupon(String couponCode, BigDecimal amount) {
+        Coupon coupon = couponRepository.findByCouponCode(couponCode)
+                .orElseThrow(() -> new EntityNotFoundException("Coupon with code " + couponCode + " not found"));
+
+        if (!isCouponValid(coupon)) {
+            throw new IllegalArgumentException("Coupon is not valid");
+        }
+
+        // check if the coupon is already used by this user and coupon is fixed_amount
+        if (coupon.getDiscountType() == DiscountType.FIXED_AMOUNT) {
+            couponConsumptionRepository.findByCoupon_CouponCodeAndCustomerId(couponCode, getUserId())
+                    .ifPresent(consumption -> {
+                        throw new IllegalArgumentException("Coupon has already been used by this user");
+                    });
+        }
+
+        DiscountDTO discountDTO;
+        if (couponDiscountType(coupon).equals(DiscountType.PERCENTAGE.name())) {
+            discountDTO = calculatePercentageDiscount(coupon, amount);
+        } else {
+            discountDTO = calculateFixedDiscount(coupon, amount);
+        }
+        return discountDTO;
+    }
+
     private void saveCouponConsumption(ConsumeCouponRequestDTO consumeCouponRequestDTO, BigDecimal actualDiscount,Coupon coupon) {
         CouponConsumption couponConsumption= CouponConsumption.builder()
                 .orderId(consumeCouponRequestDTO.getOrderId())

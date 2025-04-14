@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -57,4 +58,9 @@ public class CouponController {
         return ResponseEntity.ok(couponService.consumeCoupon(consumeCouponRequestDTO));
     }
 
+    @GetMapping("/check/{couponCode}")
+    public ResponseEntity<DiscountDTO> checkCoupon(@PathVariable String couponCode,
+                                                   @RequestParam(value = "amount") BigDecimal amount) {
+        return ResponseEntity.ok(couponService.checkCoupon(couponCode, amount));
+    }
 }

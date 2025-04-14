@@ -4,6 +4,7 @@ import com.fawry.coupon_api.dto.ConsumeCouponRequestDTO;
 import com.fawry.coupon_api.dto.CouponDTO;
 import com.fawry.coupon_api.dto.DiscountDTO;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface CouponService {
@@ -20,4 +21,6 @@ public interface CouponService {
     DiscountDTO consumeCoupon(ConsumeCouponRequestDTO consumeCouponRequestDTO);
 
     void deleteCoupon(String couponCode);
+
+    DiscountDTO checkCoupon(String couponCode, BigDecimal amount);
 }
