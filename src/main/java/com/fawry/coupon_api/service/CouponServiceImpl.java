@@ -113,7 +113,7 @@ public class CouponServiceImpl implements CouponService {
 
         // check if the coupon is already used by this user and coupon is fixed_amount
         if (coupon.getDiscountType() == DiscountType.FIXED_AMOUNT) {
-            couponConsumptionRepository.findByCoupon_CouponCodeAndCustomerId(consumeCouponRequestDTO.getCouponCode(), getUserId())
+            couponConsumptionRepository.findByCoupon_CouponCodeAndCustomerId(consumeCouponRequestDTO.getCouponCode(), consumeCouponRequestDTO.getUserId())
                     .ifPresent(consumption -> {
                         throw new IllegalArgumentException("Coupon has already been used by this user");
                     });
@@ -168,7 +168,7 @@ public class CouponServiceImpl implements CouponService {
     private void saveCouponConsumption(ConsumeCouponRequestDTO consumeCouponRequestDTO, BigDecimal actualDiscount,Coupon coupon) {
         CouponConsumption couponConsumption= CouponConsumption.builder()
                 .orderId(consumeCouponRequestDTO.getOrderId())
-                .customerId(getUserId())
+                .customerId(consumeCouponRequestDTO.getUserId())
                 .actualDiscount(actualDiscount)
                 .consumptionDate(Instant.now())
                 .coupon(coupon)
